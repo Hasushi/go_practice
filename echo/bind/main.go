@@ -5,6 +5,7 @@ import (
 	"github.com/labstack/gommon/log"
 )
 
+// jsonやqueryのパラメータを複数設定できる
 type User struct {
 	Name string `json:"name" query:"name"`
 	Age  int    `json:"age" query:"age"`
