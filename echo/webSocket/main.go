@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
@@ -19,14 +20,29 @@ func hello(c echo.Context) error {
 	}
 	defer ws.Close()
 
-	for {
-		// Write
-		err := ws.WriteMessage(websocket.TextMessage, []byte("Hello, Client!"))
-		if err != nil {
-			c.Logger().Error(err)
-		}
+	// for {
+	// 	// Write
+	// 	err := ws.WriteMessage(websocket.TextMessage, []byte("Hello, Client!"))
+	// 	if err != nil {
+	// 		c.Logger().Error(err)
+	// 	}
 
-		// Read
+	// 	// Read
+	// 	_, msg, err := ws.ReadMessage()
+	// 	if err != nil {
+	// 		c.Logger().Error(err)
+	// 	}
+	// 	fmt.Printf("%s\n", msg)
+	// }
+
+	go func() {
+		for {
+			time.Sleep(2 * time.Second)
+			ws.WriteMessage(websocket.TextMessage, []byte("Hello, Client!"))
+		}
+	}()
+
+	for {
 		_, msg, err := ws.ReadMessage()
 		if err != nil {
 			c.Logger().Error(err)
