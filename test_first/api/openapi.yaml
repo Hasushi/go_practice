@@ -1,0 +1,227 @@
+openapi: 3.0.3
+info:
+  title: Todoアプリ API
+  version: "1.0.1"
+  description: >
+    シンプルなTodoアプリのAPI仕様書です。
+    この仕様書では、正常時のレスポンスに加え、エラー発生時のレスポンスについても詳細に定義しています。
+servers:
+  - url: http://localhost:8080
+    description: ローカル開発環境
+
+paths:
+  /todos:
+    get:
+      tags:
+        - Todo
+      summary: タスク一覧の取得
+      description: 登録されている全てのタスクを一覧で返します。
+      operationId: getTodos
+      responses:
+        '200':
+          description: タスク一覧（配列）を返します。
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Todo'
+        '500':
+          description: サーバ内部エラーが発生した場合
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      tags:
+        - Todo
+      summary: 新しいタスクの作成
+      description: 新規タスクを作成し、作成されたタスクの情報を返します。
+      operationId: createTodo
+      requestBody:
+        description: 作成するタスクの情報
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TodoInput'
+      responses:
+        '201':
+          description: タスク作成成功時のレスポンス
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+        '400':
+          description: リクエストデータが不正（例：必須フィールドが欠けている、フォーマットが違う）の場合
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバ内部エラーが発生した場合
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /todos/{id}:
+    get:
+      tags:
+        - Todo
+      summary: 特定のタスクの取得
+      description: タスクのIDを指定して、該当するタスクの詳細情報を返します。
+      operationId: getTodoById
+      parameters:
+        - name: id
+          in: path
+          description: タスクの一意なID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: タスクの詳細情報を返します。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+        '404':
+          description: 指定されたIDのタスクが存在しない場合
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバ内部エラーが発生した場合
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags:
+        - Todo
+      summary: 特定のタスクの更新
+      description: タスクのIDを指定して、その内容を更新します。
+      operationId: updateTodo
+      parameters:
+        - name: id
+          in: path
+          description: 更新対象のタスクID
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: 更新するタスクの新しい情報
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TodoInput'
+      responses:
+        '200':
+          description: 更新後のタスク情報を返します。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+        '400':
+          description: リクエストデータが不正な場合
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 指定されたIDのタスクが見つからない場合
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバ内部エラーが発生した場合
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+        - Todo
+      summary: タスクの削除
+      description: タスクのIDを指定して、該当するタスクを削除します。
+      operationId: deleteTodo
+      parameters:
+        - name: id
+          in: path
+          description: 削除対象のタスクID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: タスクの削除に成功（レスポンスボディなし）
+        '404':
+          description: 指定されたIDのタスクが見つからない場合
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバ内部エラーが発生した場合
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    Todo:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "買い物リストの作成"
+        description:
+          type: string
+          example: "今週の買い物品目を整理する"
+        completed:
+          type: boolean
+          example: false
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-04-13T10:00:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-04-13T10:00:00Z"
+    TodoInput:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "買い物リストの作成"
+        description:
+          type: string
+          example: "今週の買い物品目を整理する"
+      required:
+        - title
+    ErrorResponse:
+      type: object
+      properties:
+        errorCode:
+          type: string
+          description: エラーの種類を示すコード（例：`BAD_REQUEST`、`NOT_FOUND`、`INTERNAL_SERVER_ERROR`）
+          example: "BAD_REQUEST"
+        errorMessage:
+          type: string
+          description: エラーの詳細な説明文
+          example: "入力されたデータが無効です。"
+        errors:
+          type: array
+          description: 複数のエラー情報がある場合、各エラーの詳細を文字列のリストで返します
+          items:
+            type: string
