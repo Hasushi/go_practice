@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func NewServer() *echo.Echo {
+func NewRouter() *echo.Echo {
 	e := echo.New()
 
 	e.GET("/todos", handler.GetTodos)
