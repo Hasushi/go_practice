@@ -17,7 +17,7 @@ func TestCreateTodo(t *testing.T) {
 	tests := []struct {
 		name    string
 		todo    map[string]string
-		wantResponse string
+		wantResponse map[string]string
 		wantStatus int
 		wantError bool
 	}{
@@ -27,7 +27,10 @@ func TestCreateTodo(t *testing.T) {
 				"title": "",
 				"description": "This is a test todo",
 			},
-			wantResponse: "validation error",
+			wantResponse: map[string]string{
+				"error_code": "BAD_REQUEST",
+				"error_message": "title is required",
+			},
 			wantStatus: http.StatusBadRequest,
 			wantError: true,
 		},
@@ -37,7 +40,7 @@ func TestCreateTodo(t *testing.T) {
 				"title": "Test Todo",
 				"description": "This is a test todo",
 			},
-			wantResponse: "success",
+			wantResponse: nil,
 			wantStatus: http.StatusOK,
 			wantError: false,
 		},
@@ -70,8 +73,8 @@ func TestCreateTodo(t *testing.T) {
 			if tt.wantError {
 				var responseBody map[string]string
 				json.NewDecoder(resp.Body).Decode(&responseBody)
-				if responseBody["error"] != tt.wantResponse {
-					t.Errorf("expected error message %q, got %q", tt.wantResponse, responseBody["error"])
+				if responseBody["error_code"] != tt.wantResponse["error_code"] || responseBody["error_message"] != tt.wantResponse["error_message"] || responseBody["errors"] != tt.wantResponse["errors"] {
+					t.Errorf("expected error response %v, got %v", tt.wantResponse, responseBody)
 				}
 			}
 		})

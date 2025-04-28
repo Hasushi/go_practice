@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 	"todo/internal/entity"
+	"todo/internal/schema"
 
 	"github.com/labstack/echo/v4"
 )
@@ -10,13 +11,20 @@ import (
 func CreateTodo(c echo.Context) error {
 	var todo entity.Todo
 	if err := c.Bind(&todo); err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": "bind error"})
+		errRes := schema.ErrorResponse{
+			ErrorCode:   "BAD_REQUEST",
+			ErrorMessage: "bind error",
+		}
+		return c.JSON(http.StatusBadRequest, errRes)
 	}
 	if err := c.Validate(&todo); err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": "validation error"})
+		errRes := schema.ErrorResponse{
+			ErrorCode:   "BAD_REQUEST",
+			ErrorMessage: "title is required",
+		}
+		return c.JSON(http.StatusBadRequest, errRes)
 	}
 
-	
 
 	panic("not implemented")
 }
