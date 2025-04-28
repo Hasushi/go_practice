@@ -8,3 +8,8 @@ type Todo struct {
 	CreatedAt string `json:"created_at"`
 	UpdatedAt string `json:"updated_at"`
 }
+
+type TodoInput struct {
+	Title 	 string `json:"title" validate:"required"`
+	Description string `json:"description"`
+}
