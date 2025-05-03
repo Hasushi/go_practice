@@ -1,0 +1,14 @@
+[
+   {
+      "id": 1,
+      "name": "山田太郎",
+      "email": "yamada@example.com",
+      "created_at": "2025-05-03T21:40:58.1824319+09:00"
+   },
+   {
+      "id": 2,
+      "name": "鈴木花子",
+      "email": "suzuki@example.com",
+      "created_at": "2025-05-03T21:40:58.1824319+09:00"
+   }
+]
