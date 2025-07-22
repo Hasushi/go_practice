@@ -1,8 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"iter"
+)
 
-func Fibonacci(limit int) func(yield func(int) bool) {
+func Fibonacci(limit int) iter.Seq[int] {
 	return func(yield func(int) bool) {
 		a, b := 0, 1
 		for a <= limit {
