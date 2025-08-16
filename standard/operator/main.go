@@ -4,6 +4,14 @@ import "fmt"
 
 func main() {
 	Sample2()
+
+	fmt.Println("-----")
+	VariableLenFunc(1, 2, 3)
+
+	fmt.Println("-----")
+	slice := []int{4, 5, 6, 7, 8}
+	// スライスを展開して可変長引数に渡す
+	VariableLenFunc(slice...)
 }
 
 func Sample1() {
@@ -36,4 +44,10 @@ func Sample2() {
 	z := x &^ y // ビットAND NOT
 	fmt.Printf("z: %v\n", z)
 	fmt.Printf("z(binary): %08b\n", z)
+}
+
+func VariableLenFunc(args ...int) {
+	for i, v := range args {
+		fmt.Printf("args[%d]: %v\n", i, v)
+	}
 }
