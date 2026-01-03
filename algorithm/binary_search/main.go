@@ -17,13 +17,16 @@ func main() {
 		fmt.Fscan(in, &A[i])
 	}
 
+	// P(i) (A(i) >= K)
 	lo, hi := 0, N
+	// lo: 条件に満たさないことが確定したときの最大位置
+	// hi: 条件を満たしたことが確定したときの最小位置
 	for lo < hi {
 		mid := (lo + hi) / 2
-		if A[mid] < K {
-			lo = mid
-		} else {
+		if A[mid] >= K {
 			hi = mid
+		} else {
+			lo = mid + 1
 		}
 	}
 
@@ -33,6 +36,6 @@ func main() {
 	if lo == N {
 		fmt.Fprintln(out, -1)
 	} else {
-		fmt.Fprintln(out, lo)
+		fmt.Fprintln(out, hi)
 	}
 }
